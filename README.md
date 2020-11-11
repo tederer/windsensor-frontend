@@ -24,7 +24,7 @@ The table below describes all supported environment variables.
 |----------------|---------|-------|-----------|
 |SENSOR_URL      |yes      |string|The URL of the [windsensor-service](https://github.com/tederer/windsensor-service) that provides the wind average values.|
 |WEBSERVER_PORT  |no       |integer|The port the webserver shall use (default=80).|
-|LOG_LEVEL       |no       |string |one of [DEBUG,INFO,WARNING,ERROR,OFF]|
+|LOG_LEVEL       |no       |string |one of [DEBUG, INFO, WARNING, ERROR, OFF]|
 
 ## references
 [windsensor-service](https://github.com/tederer/windsensor-service)
