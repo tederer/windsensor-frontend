@@ -4,7 +4,7 @@ This prototype of a frontend is part of the following design.
 
 ![overall design](overall-design.svg)
 
-It polls the wind averages front the [windsensor-service](https://github.com/tederer/windsensor-service) and publishes them in a human readable style on a webpage.
+It polls the wind averages from the [windsensor-service](https://github.com/tederer/windsensor-service) and publishes them in a human readable style on a webpage.
 
 Please note that this service is a prototype (without tests) and will change in future.
 
