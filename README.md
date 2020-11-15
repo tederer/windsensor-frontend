@@ -26,5 +26,11 @@ The table below describes all supported environment variables.
 |WEBSERVER_PORT  |no       |integer|The port the webserver shall use (default=80).|
 |LOG_LEVEL       |no       |string |one of [DEBUG, INFO, WARNING, ERROR, OFF]|
 
+## polling container informations
+
+To get the version and the start time of the container, insert the IP address and the port of your container into the following URL and open it in a browser.
+
+    https://<ip-address-of-container>:<port-of-container>/info
+
 ## references
 [windsensor-service](https://github.com/tederer/windsensor-service)
