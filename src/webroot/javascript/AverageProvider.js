@@ -12,14 +12,14 @@ $( document ).ready(function() {
         {dataKey:'averages.oneMinute.speed.minimum',            uiSelector:'#1min-speed-min'},
         {dataKey:'averages.oneMinute.speed.maximum',            uiSelector:'#1min-speed-max'},
         {dataKey:'averages.oneMinute.speed.trend.offset',       uiSelector:'#1min-speed-trend-offset'},
-        {dataKey:'averages.oneMinute.speed.trend.quotient',     uiSelector:'#1min-speed-trend-quotient'},
+        {dataKey:'averages.oneMinute.speed.trend.gradient',     uiSelector:'#1min-speed-trend-gradient'},
 
         {dataKey:'averages.tenMinutes.direction.average',       uiSelector:'#10min-direction'},
         {dataKey:'averages.tenMinutes.speed.average',           uiSelector:'#10min-speed-average'},
         {dataKey:'averages.tenMinutes.speed.minimum',           uiSelector:'#10min-speed-min'},
         {dataKey:'averages.tenMinutes.speed.maximum',           uiSelector:'#10min-speed-max'},
         {dataKey:'averages.tenMinutes.speed.trend.offset',      uiSelector:'#10min-speed-trend-offset'},
-        {dataKey:'averages.tenMinutes.speed.trend.quotient',    uiSelector:'#10min-speed-trend-quotient'}
+        {dataKey:'averages.tenMinutes.speed.trend.gradient',    uiSelector:'#10min-speed-trend-gradient'}
     ];
 
     var format = function format(value) {
