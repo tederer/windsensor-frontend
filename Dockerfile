@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 COPY package.json .
 RUN npm --production install
 COPY ./src ./src/
-COPY ./src/webroot ./webroot/
+COPY ./webroot ./webroot/
 COPY ./startService.sh .
 
 EXPOSE 80

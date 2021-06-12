@@ -1,11 +1,6 @@
-$( document ).ready(function() {
+var Averages = function Averages() {
     var SEPARATOR = '.';
-    var MILLIS_PER_SECOND		= 1000;
-    var POLLING_INTERVAL		= 10 * MILLIS_PER_SECOND;
-
     var lastTimestamp;
-    var intervalId;
-
     var mappings = [
         {dataKey:'averages.oneMinute.direction.average',        uiSelector:'#1min-direction'},
         {dataKey:'averages.oneMinute.speed.average',            uiSelector:'#1min-speed-average'},
@@ -43,7 +38,7 @@ $( document ).ready(function() {
         $('#timestamp').text(localTimestampAsString);
     };
 
-    var updateAverages = function updateAverages() {
+    this.poll = function poll() {
         $.getJSON( "/averages.json", function( data ) {
             var currentTimestamp = data.averages.timestamp;
 
@@ -75,41 +70,4 @@ $( document ).ready(function() {
         });
     };
 
-    var startPeriodicPolling = function startPeriodicPolling() {
-        if (intervalId === undefined) {
-            console.log('starting polling ...');
-            updateAverages();
-            // The following line reduces the time to refresh the averages when the user
-            // changes back to the windsensor tab in his/her browser. Without this line 
-            // the user has to wait POLLING_INTERVAL milliseconds because of the asynchronuous 
-            // nature of http requests.
-            window.setTimeout(updateAverages, MILLIS_PER_SECOND);
-            intervalId = window.setInterval(updateAverages, POLLING_INTERVAL);
-        }
-    };
-
-    var stopPeriodicPolling = function stopPeriodicPolling() {
-        if (intervalId !== undefined) {
-            console.log('stopping polling ...');
-            window.clearInterval(intervalId);
-            intervalId = undefined;
-        }
-    };
-
-    var handleVisibilityChange = function handleVisibilityChange(event) {
-        if(document.visibilityState === 'hidden') {
-            stopPeriodicPolling();
-        } else {
-            startPeriodicPolling();
-        }
-    };
-
-    if (document.visibilityState !== undefined) {
-        $(document).on('visibilitychange', handleVisibilityChange);
-        $(window).on('beforeunload', () => {
-            $(document).off('visibilitychange', handleVisibilityChange);
-        });
-    }
-    
-    startPeriodicPolling();
-});
+};

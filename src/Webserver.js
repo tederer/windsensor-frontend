@@ -14,9 +14,11 @@ var express 				= require('express');
 var https					= require('https');
 var configuredlogLevel		= process.env.LOG_LEVEL;
 var sensorUrl				= process.env.SENSOR_URL;
+var sensorId				= process.env.SENSOR_ID;
 var webserverPort			= process.env.WEBSERVER_PORT;
 var app						= express();
 var windAverages;
+var windHistory;
 var intervalId;
 var stopPollingTimeoutId;
 
@@ -43,6 +45,17 @@ var assertValidSensorUrl = function assertValidSensorUrl() {
 		LOGGER.logError('No sensor URL configured! Please provide it via the environment variable called SENSOR_URL.');
 		process.exit(1);
 	}
+};
+
+var assertValidSensorId = function assertValidSensorId() {
+    if (sensorId === undefined) {
+        LOGGER.logError('No sensor ID configured! Please provide it via the environment variable called SENSOR_ID.');
+        process.exit(1);
+    }
+    if (sensorId.match(/^[1-9][0-9]{4}$/) === null) {
+        LOGGER.logError('Wrong format of sensor ID "' + sensorId + '". Expected format = [1-9][0-9]{5}');
+        process.exit(1);
+    }
 };
 
 var logRequest = function logRequest(request,response, next) {
@@ -76,11 +89,16 @@ var handleFileRequests = function handleFileRequests(request, response) {
 	}
 };
 
+var pollData = function pollData() {
+	pollAverages();
+	pollHistory();
+};
+
 var startPeriodicPolling = function startPeriodicPolling() {
 	if (intervalId === undefined) {
 		LOGGER.logInfo('starting polling ...');
-		pollAverages();
-		intervalId = setInterval(pollAverages, POLLING_INTERVAL);
+		pollData();
+		intervalId = setInterval(pollData, POLLING_INTERVAL);
 	}
 };
 
@@ -112,20 +130,37 @@ var handleAveragesRequest = function handleAveragesRequest(request, response) {
 	response.json(windAverages);
 };
 
+var handleHistoryRequest = function handleHistoryRequest(request, response) {
+	LOGGER.logDebug(() => 'request for history values');
+	restartStopPollingTimeout();
+	startPeriodicPolling();
+	response.json(windHistory);
+};
+
 var pollAverages = function pollAverages() {
-	LOGGER.logDebug('polling averages ...');
-	var request = https.get(sensorUrl, (response) => {
+	var url = sensorUrl + '/windsensor/' + sensorId;
+	poll(url, data => windAverages = data, 'averages');
+};
+
+var pollHistory = function pollHistory() {
+	var url = sensorUrl + '/windsensor/history/' + sensorId;
+	poll(url, data => windHistory = data, 'history');
+};
+
+var poll = function poll(url, consumerCallback, description) {
+	LOGGER.logDebug('polling ' + description + ' ...');
+	var request = https.get(url, (response) => {
 		if (response.statusCode !== 200) {
-			LOGGER.logError('failed to poll "' + sensorUrl + '" [statusCode=' + response.statusCode + ', statusMessage=' + response.statusMessage + ']');
+			LOGGER.logError('failed to poll "' + url + '" [statusCode=' + response.statusCode + ', statusMessage=' + response.statusMessage + ']');
 		} else {
 			var rawData = '';
 			response.setEncoding('utf8');
-			response.on('error', (error) => LOGGER.logError('failed to poll averages: ' + error.toString()));
+			response.on('error', (error) => LOGGER.logError('failed to poll ' + description + ': ' + error.toString()));
 			response.on('data', (chunk) => rawData += chunk);
 			response.on('end', (chunk) => {
 				try {
-					windAverages = JSON.parse(rawData);
-					LOGGER.logInfo('polled averages: ' + rawData);
+					consumerCallback(JSON.parse(rawData));
+					LOGGER.logInfo('polled ' + description + ' successfully');
 				} catch(e) {
 					LOGGER.logError('failed to parse "' + rawData + '" because of ' + e.toString());
 				}
@@ -137,9 +172,12 @@ var pollAverages = function pollAverages() {
 };
 
 assertValidSensorUrl();
+assertValidSensorId();
 LOGGER.logInfo('sensor URL = ' + sensorUrl);
+LOGGER.logInfo('sensor ID  = ' + sensorId);
 
 app.get('/averages.json', handleAveragesRequest);
+app.get('/history.json', handleHistoryRequest);
 
 app.get(/\/info/, (request, response) => {
     var path = request.path;
