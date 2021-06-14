@@ -26,9 +26,14 @@ var blendColor = function blendColor(colorA, colorB, contributionA) {
 var ColorGradient = function ColorGradient(colorMapping) {
    var colorGradient;
    var chartDimension;
+   var currentMaxKtsScaleValue;
 
-   var chartAreaChangedSize = function chartAreaChangedSize(chartArea) {
+   var chartAreaChanged = function chartAreaChanged(chartArea) {
       return chartArea !== undefined && (chartDimension === undefined || chartDimension.width !== chartArea.width || chartDimension.height !== chartArea.height);
+   };
+
+   var maxKtsScaleValueChanged = function maxKtsScaleValueChanged(maxKtsScaleValue) {
+      return currentMaxKtsScaleValue === undefined || currentMaxKtsScaleValue !== maxKtsScaleValue;
    };
 
    var colorMappingExistsFor = function colorMappingExistsFor(speedInKts) {
@@ -38,9 +43,10 @@ var ColorGradient = function ColorGradient(colorMapping) {
    this.get = function get(maxKtsScaleValue, context) {
       var chartArea = context.chart.chartArea;
 
-      if (chartAreaChangedSize(chartArea)) {
-         chartDimension = {width: chartArea.width, height: chartArea.height};
-         colorGradient  = context.chart.ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+      if ((chartArea !== undefined && maxKtsScaleValueChanged(maxKtsScaleValue)) || chartAreaChanged(chartArea)) {
+         chartDimension          = {width: chartArea.width, height: chartArea.height};
+         currentMaxKtsScaleValue = maxKtsScaleValue;
+         colorGradient           = context.chart.ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
 
          for (var i = 0; i < colorMapping.length; i++) {
             if (maxKtsScaleValue >= colorMapping[i].getSpeedInKts()) {

@@ -9,7 +9,8 @@
    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-   <script src="javascript/chart/SpeedUtils.js"></script>
+   <script src="javascript/SpeedUtils.js"></script>
+   <script src="javascript/DirectionUtils.js"></script>
    <script src="javascript/chart/ColorUtils.js"></script>
    <script src="javascript/chart/Windchart.js"></script>
    <script src="/javascript/Averages.js"></script>
@@ -38,33 +39,27 @@
                     <tbody>
                         <tr>
                             <td>direction</td>
-                            <td id="10min-direction" class="text-right"></td>
-                            <td class="text-left">°</td>
+                            <td id="10min-direction" class="text-right" colspan="2"></td>
                         </tr>
                         <tr>
                             <td>speed</td>
                             <td id="10min-speed-average" class="text-right"></td>
-                            <td class="text-left">km/h</td>
                         </tr>
                         <tr>
                             <td>speed (min)</td>
                             <td id="10min-speed-min" class="text-right"></td>
-                            <td class="text-left">km/h</td>
                         </tr>
                         <tr>
                             <td>speed (max)</td>
                             <td id="10min-speed-max" class="text-right"></td>
-                            <td class="text-left">km/h</td>
                         </tr>
                         <tr>
                             <td>speed trend gradient</td>
                             <td id="10min-speed-trend-gradient" class="text-right"></td>
-                            <td class="text-left">km/h</td>
                         </tr>
                         <tr>
                             <td>speed trend offset</td>
                             <td id="10min-speed-trend-offset" class="text-right"></td>
-                            <td class="text-left">km/h</td>
                         </tr>
                     </tbody>
                 </table>
@@ -74,33 +69,27 @@
                     <tbody>
                         <tr>
                             <td>direction</td>
-                            <td id="1min-direction" class="text-right"></td>
-                            <td class="text-left">°</td>
+                            <td id="1min-direction" class="text-right" colspan="2"></td>
                         </tr>
                         <tr>
                             <td>speed</td>
                             <td id="1min-speed-average" class="text-right"></td>
-                            <td class="text-left">km/h</td>
                         </tr>
                         <tr>
                             <td>speed (min)</td>
                             <td id="1min-speed-min" class="text-right"></td>
-                            <td class="text-left">km/h</td>
                         </tr>
                         <tr>
                             <td>speed (max)</td>
                             <td id="1min-speed-max" class="text-right"></td>
-                            <td class="text-left">km/h</td>
                         </tr>
                         <tr>
                             <td>speed trend gradient</td>
                             <td id="1min-speed-trend-gradient" class="text-right"></td>
-                            <td class="text-left">km/h</td>
                         </tr>
                         <tr>
                             <td>speed trend offset</td>
                             <td id="1min-speed-trend-offset" class="text-right"></td>
-                            <td class="text-left">km/h</td>
                         </tr>
                     </tbody>
                 </table>
