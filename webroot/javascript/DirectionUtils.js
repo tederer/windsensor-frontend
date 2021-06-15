@@ -1,7 +1,7 @@
-var directionNames = ['N', 'NNE', 'NE', 'E', 'SE', 'SSE', 'S', 'SSW', 'SW', 'W', 'NW', 'NNW'];
+var directionNames = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESO', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
 var directionToName = function directionToName(directionInDegrees) {
    var segmentSize = 360 / directionNames.length;
-   var index = Math.floor(directionInDegrees / segmentSize);
+   var index = Math.floor(((directionInDegrees + segmentSize / 2) % 360) / segmentSize);
    return directionNames[index];
 };
