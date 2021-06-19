@@ -1,6 +1,6 @@
 {
    "name": "windsensor-frontend-service",
-   "version": "0.9.0",
+   "version": "0.11.0",
    "description": "frontend part of the windsensor",
    "private": true,
    "author": {
