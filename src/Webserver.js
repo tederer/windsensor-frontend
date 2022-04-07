@@ -2,21 +2,22 @@
 require('./logging/LoggingSystem.js');
 require('./Version.js');
 
-var LOGGER 					= windsensor.logging.LoggingSystem.createLogger('Webserver');
-var WEB_ROOT_FOLDER			= 'webroot';
-var MILLIS_PER_SECOND		= 1000;
-var POLLING_INTERVAL		= 10 * MILLIS_PER_SECOND;
-var STOP_POLLING_TIMEOUT	= 30 * MILLIS_PER_SECOND;
-var DEFAULT_PORT			= 80;
+var LOGGER 					 = windsensor.logging.LoggingSystem.createLogger('Webserver');
+var WEB_ROOT_FOLDER		 = 'webroot';
+var MILLIS_PER_SECOND	 = 1000;
+var POLLING_INTERVAL		 = 10 * MILLIS_PER_SECOND;
+var STOP_POLLING_TIMEOUT = 30 * MILLIS_PER_SECOND;
+var DEFAULT_PORT			 = 80;
 
-var fs 						= require('fs');
-var express 				= require('express');
-var https					= require('https');
-var configuredlogLevel		= process.env.LOG_LEVEL;
-var sensorUrl				= process.env.SENSOR_URL;
-var sensorId				= process.env.SENSOR_ID;
-var webserverPort			= process.env.WEBSERVER_PORT;
-var app						= express();
+var fs 						 = require('fs');
+var express 				 = require('express');
+var https					 = require('https');
+var configuredlogLevel	 =  process.env.LOG_LEVEL;
+var sensorUrl				 = process.env.SENSOR_URL;
+var sensorId				 = process.env.SENSOR_ID;
+var webserverPort			 = process.env.WEBSERVER_PORT;
+var forward			       = process.env.FORWARD;
+var app						 = express();
 var windAverages;
 var windHistory;
 var intervalId;
@@ -123,6 +124,12 @@ var restartStopPollingTimeout = function restartStopPollingTimeout() {
 	stopPollingTimeoutId = setTimeout(stopPollingTimeoutExpired, STOP_POLLING_TIMEOUT);
 };
 
+var sendForwardingPage = function sendForwardingPage(request, response) {
+   var forwardingPage = 'indexForwarding.html';
+	LOGGER.logInfo('returning ' + forwardingPage);
+	response.sendFile(forwardingPage, { root: WEB_ROOT_FOLDER } );
+};
+
 var handleAveragesRequest = function handleAveragesRequest(request, response) {
 	LOGGER.logDebug(() => 'request for average values');
 	restartStopPollingTimeout();
@@ -176,18 +183,23 @@ assertValidSensorId();
 LOGGER.logInfo('sensor URL = ' + sensorUrl);
 LOGGER.logInfo('sensor ID  = ' + sensorId);
 
-app.get('/averages.json', handleAveragesRequest);
-app.get('/history.json', handleHistoryRequest);
+if (forward !== undefined) {
+   app.get('*', sendForwardingPage);
+   LOGGER.logInfo('returning forwarding info');
+} else {
+   app.get('/averages.json', handleAveragesRequest);
+   app.get('/history.json', handleHistoryRequest);
 
-app.get(/\/info/, (request, response) => {
-    var path = request.path;
-    LOGGER.logDebug('GET request [path: ' + path + ']');
-    response.status(200).json(info);
-});
+   app.get(/\/info/, (request, response) => {
+      var path = request.path;
+      LOGGER.logDebug('GET request [path: ' + path + ']');
+      response.status(200).json(info);
+   });
 
-app.get('*', replaceSpacesInRequestUrlByEscapeSequence);
-app.get('*', logRequest);
-app.get('*', handleFileRequests );
+   app.get('*', replaceSpacesInRequestUrlByEscapeSequence);
+   app.get('*', logRequest);
+   app.get('*', handleFileRequests );
+}
 
 var port = webserverPort === undefined ? DEFAULT_PORT : webserverPort;
 
