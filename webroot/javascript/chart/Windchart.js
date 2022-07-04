@@ -82,13 +82,14 @@ var colorMapping = [ new ColorMapping(bftToKts(0), {r:   0, g:   0, b:   0}),
             }
          });
          
-         var maxSpeedInBft = ktsToBft(maxSpeedInKts);
-         
          result.timestamps.push(oldestTimestampInMillis);
          result.timestamps.push(middleTimestampInMillis);
          result.timestamps.push(newestTimestampInMillis);
          result.timestamps = result.timestamps.map(toTimeAsText);
-         result.maxKtsScaleValue = bftToKts(Math.min(12, (maxSpeedInKts !== minimumKtsForBft[maxSpeedInBft]) ? maxSpeedInBft + 1 : maxSpeedInBft));
+         
+         var maxSpeedInBft       = ktsToBft(maxSpeedInKts);
+         var maxBftScaleValue    = Math.min(12, (maxSpeedInKts !== minimumKtsForBft[maxSpeedInBft]) ? maxSpeedInBft + 1 : maxSpeedInBft);
+         result.maxKtsScaleValue = bftToKts(Math.max(1, maxBftScaleValue));
       }
 
       return result;
@@ -119,7 +120,6 @@ var colorMapping = [ new ColorMapping(bftToKts(0), {r:   0, g:   0, b:   0}),
 
    this.display = function display(samplesMessage) {
       sampleData = convertSampleData(samplesMessage.twoHoursHistory.data);
-
       if (chart === undefined) {
          var chartConfig = {
             type: 'line',
